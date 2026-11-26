@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17281e">
+  <title>Tallyon — POS & Inventory Showcase</title>
+  <style>
+    :root {
+      --ink: #17231c;
+      --muted: #68766d;
+      --green: #28745a;
+      --green-dark: #1d5945;
+      --green-soft: #edf5f1;
+      --cream: #f7f8f5;
+      --line: #dde6df;
+      --white: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--cream);
+      font: 16px/1.55 "Segoe UI", Arial, sans-serif;
+    }
+    a { color: inherit; }
+    .wrap { width: min(1180px, calc(100% - 40px)); margin: auto; }
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(221, 230, 223, .8);
+      background: rgba(247, 248, 245, .94);
+      backdrop-filter: blur(12px);
+    }
+    .nav-inner {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 850; letter-spacing: -.3px; }
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      color: #fff;
+      background: var(--green);
+      box-shadow: 0 8px 20px rgba(40, 116, 90, .18);
+    }
+    .nav-links { display: flex; align-items: center; gap: 8px; }
+    .nav-links a {
+      padding: 8px 10px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .nav-links a:hover { color: var(--green); }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 10px 16px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--white);
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 800;
+      box-shadow: 0 5px 16px rgba(23, 35, 28, .04);
+    }
+    .btn.primary { border-color: var(--green); background: var(--green); color: #fff; }
+    .btn.primary:hover { background: var(--green-dark); }
+    .hero {
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 82% 18%, rgba(40, 116, 90, .12), transparent 25%),
+        linear-gradient(135deg, #fafbf8 0%, #edf4ef 100%);
+    }
+    .hero-inner {
+      min-height: 620px;
+      display: grid;
+      grid-template-columns: 1fr 1.05fr;
+      align-items: center;
+      gap: 56px;
+      padding: 64px 0;
+    }
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 850;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    h1 {
+      max-width: 680px;
+      margin: 0;
+      font-size: clamp(48px, 7vw, 82px);
+      line-height: .98;
+      letter-spacing: -.06em;
+    }
+    .hero-copy > p:not(.eyebrow) {
+      max-width: 590px;
+      margin: 24px 0 28px;
+      color: var(--muted);
+      font-size: 19px;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .proof {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+    }
+    .proof span::before { content: "✓"; margin-right: 7px; color: var(--green); }
+    .app-window {
+      overflow: hidden;
+      border: 1px solid #ccd7cf;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 28px 70px rgba(23, 35, 28, .16);
+      transform: rotate(1deg);
+    }
+    .window-bar {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcfb;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #bdc7c0; }
+    .window-ui { display: grid; grid-template-columns: 112px 1fr 238px; height: 390px; }
+    .mock-side { padding: 16px 10px; background: #17281e; }
+    .mock-logo { width: 74px; height: 12px; margin: 2px 0 18px 4px; border-radius: 4px; background: #cbe0d4; }
+    .mock-nav { height: 26px; margin: 5px 0; border-radius: 6px; background: rgba(255, 255, 255, .07); }
+    .mock-nav.active { background: #edf5f1; }
+    .mock-main { min-width: 0; padding: 20px 14px; }
+    .mock-title { width: 118px; height: 19px; margin-bottom: 16px; border-radius: 5px; background: #2a3b31; }
+    .mock-search { height: 34px; margin-bottom: 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+    .mock-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+    .mock-item { height: 78px; padding: 9px; border: 1px solid var(--line); border-radius: 9px; background: #fff; }
+    .mock-item i { display: block; width: 70%; height: 8px; margin-bottom: 24px; border-radius: 4px; background: #b9c6be; }
+    .mock-item b { display: block; width: 44%; height: 9px; border-radius: 4px; background: #28745a; }
+    .mock-cart { padding: 18px 12px; border-left: 1px solid var(--line); background: #fcfdfc; }
+    .mock-cart-title { width: 90px; height: 14px; margin-bottom: 18px; border-radius: 4px; background: #2a3b31; }
+    .mock-line { height: 44px; margin: 7px 0; border-bottom: 1px solid var(--line); }
+    .mock-total { height: 58px; margin-top: 14px; border-radius: 8px; background: #edf5f1; }
+    section { scroll-margin-top: 90px; }
+    .section { padding: 92px 0; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 34px; }
+    .section-head h2 { max-width: 620px; margin: 0; font-size: clamp(34px, 5vw, 52px); line-height: 1.08; letter-spacing: -.045em; }
+    .section-head p { max-width: 440px; margin: 0; color: var(--muted); }
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .feature {
+      min-height: 230px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--white);
+    }
+    .icon {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 28px;
+      border-radius: 12px;
+      color: var(--green);
+      background: var(--green-soft);
+      font-size: 20px;
+      font-weight: 900;
+    }
+    .feature h3 { margin: 0 0 8px; font-size: 20px; }
+    .feature p { margin: 0; color: var(--muted); }
+    .workflow { background: #17281e; color: #fff; }
+    .workflow .eyebrow { color: #9bcbb6; }
+    .workflow-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin-top: 36px; border: 1px solid rgba(255, 255, 255, .10); border-radius: 14px; overflow: hidden; }
+    .step { min-height: 240px; padding: 24px; border-right: 1px solid rgba(255, 255, 255, .10); background: rgba(255, 255, 255, .025); }
+    .step:last-child { border-right: 0; }
+    .step-number { display: block; color: #9bcbb6; font-size: 12px; font-weight: 850; letter-spacing: .12em; }
+    .step h3 { margin: 50px 0 8px; }
+    .step p { margin: 0; color: #bac8bf; }
+    .roles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .role { padding: 26px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+    .role-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .role h3 { margin: 0; }
+    .tag { padding: 5px 9px; border-radius: 999px; color: var(--green); background: var(--green-soft); font-size: 11px; font-weight: 850; }
+    .role ul { margin: 0; padding: 0; list-style: none; }
+    .role li { padding: 9px 0; border-top: 1px solid var(--line); color: var(--muted); }
+    .role li::before { content: "—"; margin-right: 8px; color: var(--green); }
+    .cta { padding: 70px 0; }
+    .cta-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+      padding: 38px;
+      border-radius: 18px;
+      color: #fff;
+      background: linear-gradient(135deg, #28745a, #1d5945);
+    }
+    .cta-box h2 { margin: 0 0 6px; font-size: clamp(30px, 4vw, 44px); letter-spacing: -.04em; }
+    .cta-box p { margin: 0; color: #d7e6de; }
+    footer { padding: 26px 0 34px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+    .footer-inner { display: flex; justify-content: space-between; gap: 20px; }
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; padding: 54px 0; }
+      .hero-copy { max-width: 680px; }
+      .app-window { max-width: 720px; }
+      .feature-grid, .roles-grid { grid-template-columns: 1fr 1fr; }
+      .workflow-grid { grid-template-columns: 1fr 1fr; }
+      .step:nth-child(2) { border-right: 0; }
+    }
+    @media (max-width: 640px) {
+      .wrap { width: min(100% - 28px, 1180px); }
+      .nav-inner { height: 64px; }
+      .nav-links a { display: none; }
+      .nav-links .btn { min-height: 40px; }
+      .hero-inner { min-height: 0; gap: 34px; padding: 44px 0; }
+      h1 { font-size: 50px; }
+      .hero-copy > p:not(.eyebrow) { font-size: 17px; }
+      .app-window { transform: none; }
+      .window-ui { grid-template-columns: 56px 1fr; height: 330px; }
+      .mock-side { padding: 12px 7px; }
+      .mock-logo { width: 38px; }
+      .mock-cart { display: none; }
+      .mock-grid { grid-template-columns: repeat(2, 1fr); }
+      .mock-item { height: 70px; }
+      .section { padding: 68px 0; }
+      .section-head { display: block; }
+      .section-head p { margin-top: 14px; }
+      .feature-grid, .roles-grid, .workflow-grid { grid-template-columns: 1fr; }
+      .step { min-height: 190px; border-right: 0; border-bottom: 1px solid rgba(255, 255, 255, .10); }
+      .step:last-child { border-bottom: 0; }
+      .step h3 { margin-top: 34px; }
+      .cta-box { align-items: flex-start; flex-direction: column; padding: 28px; }
+      .footer-inner { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Main navigation">
+    <div class="wrap nav-inner">
+      <div class="brand"><span class="brand-mark">T</span><span>Tallyon POS</span></div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#roles">Roles</a>
+        <a class="btn primary" href="demo.html">Open demo</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow">Local POS & inventory</p>
+        <h1>One clear view of every sale.</h1>
+        <p>A practical POS, inventory and stock-control system built for local retail teams—fast at checkout and easy to operate on a single PC or private LAN.</p>
+        <div class="actions">
+          <a class="btn primary" href="demo.html">Open demo</a>
+        </div>
+        <div class="proof">
+          <span>XAMPP / PHP</span>
+          <span>MySQL</span>
+          <span>Local QR tools</span>
+        </div>
+      </div>
+      <div class="app-window" aria-label="Tallyon interface preview">
+        <div class="window-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="window-ui">
+          <aside class="mock-side">
+            <div class="mock-logo"></div>
+            <div class="mock-nav active"></div><div class="mock-nav"></div><div class="mock-nav"></div>
+            <div class="mock-nav"></div><div class="mock-nav"></div>
+          </aside>
+          <div class="mock-main">
+            <div class="mock-title"></div><div class="mock-search"></div>
+            <div class="mock-grid">
+              <div class="mock-item"><i></i><b></b></div>
+              <div class="mock-item"><i></i><b></b></div>
+              <div class="mock-item"><i></i><b></b></div>
+              <div class="mock-item"><i></i><b></b></div>
+              <div class="mock-item"><i></i><b></b></div>
+              <div class="mock-item"><i></i><b></b></div>
+            </div>
+          </div>
+          <aside class="mock-cart">
+            <div class="mock-cart-title"></div>
+            <div class="mock-line"></div><div class="mock-line"></div>
+            <div class="mock-line"></div><div class="mock-total"></div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="features">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Built for the everyday retail workflow.</h2>
+          <p>Keep checkout, stock and reporting connected in one focused workspace.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature"><div class="icon">+</div><h3>Fast point of sale</h3><p>Search or scan products, manage quantities and discounts, accept cash and print an order summary.</p></article>
+          <article class="feature"><div class="icon">▦</div><h3>Live inventory</h3><p>Track stock levels, low-stock thresholds and stock movements without separate spreadsheets.</p></article>
+          <article class="feature"><div class="icon">⌗</div><h3>QR stock tools</h3><p>Create local QR stickers and scan with a camera, phone photo or compatible handheld scanner.</p></article>
+          <article class="feature"><div class="icon">↗</div><h3>Sales history</h3><p>Search completed sales, review totals and keep a clear record of daily order activity.</p></article>
+          <article class="feature"><div class="icon">◇</div><h3>Catalog control</h3><p>Maintain categories, SKUs, costs, selling prices and active or inactive products.</p></article>
+          <article class="feature"><div class="icon">⇄</div><h3>Portable backups</h3><p>Download SQLite snapshots and restore safely with a private pre-restore backup on the server.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section workflow" id="workflow">
+      <div class="wrap">
+        <p class="eyebrow">Simple operations</p>
+        <div class="section-head">
+          <h2>From shelf to receipt in four steps.</h2>
+          <p>Designed to reduce screen switching and keep the next action obvious.</p>
+        </div>
+        <div class="workflow-grid">
+          <article class="step"><span class="step-number">01 / CATALOG</span><h3>Add products</h3><p>Create items with SKUs, categories and prices.</p></article>
+          <article class="step"><span class="step-number">02 / STOCK</span><h3>Record inventory</h3><p>Receive, transfer or adjust quantities.</p></article>
+          <article class="step"><span class="step-number">03 / CHECKOUT</span><h3>Build the sale</h3><p>Search, scan and charge with an on-screen keypad.</p></article>
+          <article class="step"><span class="step-number">04 / REVIEW</span><h3>Review activity</h3><p>Monitor overview totals and sales history.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="roles">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Right-sized access for every role.</h2>
+          <p>Focused permissions keep team work simple and protect administrative controls.</p>
+        </div>
+        <div class="roles-grid">
+          <article class="role"><div class="role-top"><h3>Administrator</h3><span class="tag">FULL ACCESS</span></div><ul><li>Overview and reporting</li><li>POS and sales history</li><li>Inventory and catalog controls</li><li>Settings and user management</li></ul></article>
+          <article class="role"><div class="role-top"><h3>Cashier</h3><span class="tag">POS FOCUS</span></div><ul><li>Point of sale</li><li>Read-only inventory</li><li>Quick product search</li><li>No settings or sales history</li></ul></article>
+          <article class="role"><div class="role-top"><h3>QR scanner</h3><span class="tag">STOCK FOCUS</span></div><ul><li>Scan-first stock in</li><li>Stock out and counts</li><li>Camera or photo scanning</li><li>No sales or administration</li></ul></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="wrap">
+        <div class="cta-box">
+          <div><h2>Try the Tallyon coffee-store demo.</h2><p>Explore a complete POS, inventory and sales workflow with sample data.</p></div>
+          <a class="btn" href="demo.html">Open demo</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="wrap footer-inner"><span>Tallyon POS & Inventory</span><span>Local retail operations · PHP · MySQL · QR</span></div></footer>
+</body>
+</html>
